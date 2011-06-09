@@ -1,3 +1,8 @@
 name: Curse
 main: me.hgilman.Curse.Curse
 version: 0.5
+commands:
+   curse:
+      description: Makes the player's life... unpleasant.
+      usage: |
+           /curse <player>
