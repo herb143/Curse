@@ -1,6 +1,7 @@
 package me.hgilman.Curse;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Logger;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +37,7 @@ public class Curse extends JavaPlugin {
 
 		new File("plugins/Curse").mkdir();
 		File playersFile = new File("plugins/Curse/CursedPlayers.dat");
-		
+
 		if(!(playersFile.exists()))
 		{
 			try
@@ -50,19 +51,24 @@ public class Curse extends JavaPlugin {
 		}
 		else
 		{
-			cursedPlayers = load("plugins/Curse/CursedPlayers.dat");
+			setCursedPlayers(load("plugins/Curse/CursedPlayers.dat"));
 		}
 		
-
-
-
+		Player[] onlinePlayers = this.getServer().getOnlinePlayers();
+		for (int i = 0; i < onlinePlayers.length; i++) // For every online player...
+		{
+			if (isCursed(onlinePlayers[i])) // If the player is cursed...
+			{
+				newLightningStrike(onlinePlayers[i]); // Schedule a new lightning strike event.
+			}
+		}
+		
 		log.info("Curse plugin enabled.");
 	}
 
-
 	public void onDisable()
 	{
-		save(cursedPlayers, "plugins/Curse/CursedPlayers.dat");
+		save(getCursedPlayers(), "plugins/Curse/CursedPlayers.dat");
 
 		log.info("Curse plugin disabled.");
 	}
@@ -79,23 +85,23 @@ public class Curse extends JavaPlugin {
 						sender.sendMessage("Error! You must specify a player.");
 						return false;
 					}
-					else if (this.getServer().getPlayer(args[0]) != null)
+					else if (this.getServer().getPlayer(args[0]) != null) // If the input matched a player...
 					{
-						if (!(cursedPlayers.containsKey(this.getServer().getPlayer(args[0]).getName()))) // If the player was not on the list.
+						
+						Player targetPlayer = this.getServer().getPlayer(args[0]);
+						
+						if (isCursed(targetPlayer)) // If the player is cursed...
 						{
-							cursedPlayers.put(this.getServer().getPlayer(args[0]).getName(), true);
-							sender.sendMessage("Cursed " + this.getServer().getPlayer(args[0]).getName() + ".");
+							uncursePlayer(targetPlayer); // Uncurse the player.
+							sender.sendMessage("Uncursed " + targetPlayer.getName() + ".");
+							
 						}
-						else if (!(cursedPlayers.get(this.getServer().getPlayer(args[0]).getName()).booleanValue())) // If they wre not cursed.
+						else // If they are not cursed.
 						{
-							cursedPlayers.put(this.getServer().getPlayer(args[0]).getName(), true);
-							sender.sendMessage("Cursed " + this.getServer().getPlayer(args[0]).getName() + ".");
+							cursePlayer(targetPlayer); // Curse the player.
+							sender.sendMessage("Cursed " + targetPlayer.getName() + ".");
 						}
-						else
-						{
-							cursedPlayers.put(this.getServer().getPlayer(args[0]).getName(), false);
-							sender.sendMessage("Uncursed " + this.getServer().getPlayer(args[0]).getName() + ".");
-						}
+						
 					}
 					else // They gave input, but it was bad.
 					{
@@ -124,6 +130,11 @@ public class Curse extends JavaPlugin {
 	public HashMap<String,Boolean> getCursedPlayers()
 	{
 		return cursedPlayers;
+	}
+
+	public void setCursedPlayers(HashMap<String,Boolean> newCursedPlayers)
+	{
+		cursedPlayers = newCursedPlayers;
 	}
 
 	public void save(HashMap<String,Boolean> pluginEnabled, String path)
@@ -160,8 +171,44 @@ public class Curse extends JavaPlugin {
 		return null;
 	}
 
+	public boolean isCursed(Player player)
+	{
 
+		if (!(getCursedPlayers().containsKey(player.getName()))) // If the player was not on the list...
+		{
+			return false;
+		}
+		
+		else if (this.getCursedPlayers().get(player.getName()).booleanValue()) // If they're cursed...
+		{
+			return true;
+		}
+		else
+		{
+			return false; // If they're on the list but are not cursed...
+		}
 
+	}
+	
+	public void cursePlayer(Player player) // Curses the player.
+	{
+		getCursedPlayers().put(player.getName(), true);
+		newLightningStrike(player); // Schedule a new lightning strike.
+	}
+	
+	public void uncursePlayer(Player player)
+	{
+		getCursedPlayers().put(player.getName(), false); // Uncurses the player.
+	}
+	
+	public void newLightningStrike(Player player) // Schedules a new lightningstrike effect on the player.
+	{
+		Random generator = new Random();
+		int nextStrikeTicks = generator.nextInt(1200);
+		double nextStrikeSeconds = nextStrikeTicks / 20;
+		player.getServer().getScheduler().scheduleSyncDelayedTask(this, new RunnableStrikeLightningEffect(this, player), nextStrikeTicks);
+		log.info("Scheduled lightning strike effect for " + player.getName() + " in " + nextStrikeSeconds + " seconds.");
+	}
 
 
 }

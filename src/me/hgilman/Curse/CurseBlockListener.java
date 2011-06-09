@@ -21,9 +21,8 @@ public class CurseBlockListener extends BlockListener {
 	{
 		Block placedBlock = event.getBlock();
 		Player placingPlayer = event.getPlayer();
-		boolean cursed = plugin.getCursedPlayers().get(placingPlayer.getName()).booleanValue(); // Whether or not they are cursed.
 		
-		if (cursed)
+		if (plugin.isCursed(placingPlayer)) // If the player is cursed.
 		{
 			placedBlock.setType(Material.WOOL);
 		}
