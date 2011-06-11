@@ -24,6 +24,7 @@ public class Curse extends JavaPlugin {
 	private HashMap<String,Boolean> cursedPlayers = new HashMap<String,Boolean>(); // The cursedPlayers hashmap.
 
 	private final CurseBlockListener blockListener = new CurseBlockListener(this);
+	private final CursePlayerListener playerListener = new CursePlayerListener(this);
 
 	Logger log = Logger.getLogger("Minecraft"); // Get the logger.
 
@@ -34,6 +35,9 @@ public class Curse extends JavaPlugin {
 		PluginManager pm = this.getServer().getPluginManager();
 
 		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Event.Priority.Normal, this);
+
 
 		new File("plugins/Curse").mkdir();
 		File playersFile = new File("plugins/Curse/CursedPlayers.dat");
