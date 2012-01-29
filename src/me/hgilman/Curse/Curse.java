@@ -12,7 +12,6 @@ import java.io.ObjectOutputStream;
 import java.lang.String;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.event.Event;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,9 +33,8 @@ public class Curse extends JavaPlugin {
 
 		PluginManager pm = this.getServer().getPluginManager();
 
-		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Event.Priority.Normal, this);
+		pm.registerEvents(blockListener, this);
+		pm.registerEvents(playerListener, this);
 
 
 		new File("plugins/Curse").mkdir();

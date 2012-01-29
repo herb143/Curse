@@ -1,6 +1,7 @@
 package me.hgilman.Curse;
 
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.entity.Player;
@@ -8,7 +9,7 @@ import org.bukkit.ChatColor;
 import me.hgilman.Curse.CurseTranslator;
 
 
-public class CursePlayerListener extends PlayerListener {
+public class CursePlayerListener implements Listener {
 	
 	public static Curse plugin;
 
@@ -18,6 +19,7 @@ public class CursePlayerListener extends PlayerListener {
 		plugin = instance;
 	}
 	
+	@EventHandler
 	public void onPlayerJoin (PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
@@ -29,6 +31,7 @@ public class CursePlayerListener extends PlayerListener {
 		
 	}
 	
+	@EventHandler
 	public void onPlayerChat(PlayerChatEvent event)
 	{	
 		if (plugin.isCursed(event.getPlayer())) // If the player in question is cursed...
