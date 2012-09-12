@@ -155,11 +155,13 @@ public class Curse extends JavaPlugin {
 	@SuppressWarnings("unchecked")
 	public HashMap<String,Boolean> load(String path)
 	{
+		ObjectInputStream ois = null;
 		try
 		{
 
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+			ois = new ObjectInputStream(new FileInputStream(path));
 			Object result = ois.readObject();
+			ois.close();
 			//you can feel free to cast result to HashMap<String,Boolean> if you know there's that HashMap in the file
 			return (HashMap<String,Boolean>)result;
 
