@@ -4,5 +4,6 @@ version: 0.5
 commands:
    curse:
       description: Makes the player's life... unpleasant.
-      usage: |
-           /curse <player>
+      permission: curse.curse
+      permission-message: ""
+      usage: /<command> <player>
