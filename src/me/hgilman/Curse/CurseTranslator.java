@@ -1,15 +1,16 @@
 package me.hgilman.Curse;
 
 import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CurseTranslator {
 
 	private static char[] vowels = {'a', 'e', 'i', 'o', 'u'};
 	private static char[] extendedVowels = {'a', 'e', 'i', 'o', 'u', 'y'};
-	private  StringTokenizer tokenizer;
+	Matcher matcher;
 	private String word;
-	private String returnValue;
+	private StringBuilder returnValue;
 	
 	static {
 		Arrays.sort(vowels);
@@ -18,18 +19,18 @@ public class CurseTranslator {
 	
 	public CurseTranslator(String text)
 	{
-		tokenizer = new StringTokenizer(text);
+		matcher = Pattern.compile(" [A-Za-z]+").matcher(text);
 		
-		while(tokenizer.hasMoreTokens())
+		while(matcher.find())
 		{
-			word = tokenizer.nextToken();
+			word = matcher.group().substring(1);
 			if (returnValue != null)
 			{
-			returnValue = returnValue + " " + shifter(word);
+			returnValue.append(" " + shifter(word));
 			}
 			else
 			{
-				returnValue = shifter(word);
+				returnValue = new StringBuilder(shifter(word));
 			}
 		}
 	}
@@ -61,7 +62,7 @@ public class CurseTranslator {
 	
 	public String getTranslation()
 	{
-		return returnValue;
+		return returnValue.toString();
 	}
 
 }
