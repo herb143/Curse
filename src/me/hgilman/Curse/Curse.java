@@ -16,6 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
+
 import me.hgilman.Curse.CurseBlockListener;
 
 public class Curse extends JavaPlugin {
@@ -76,58 +77,45 @@ public class Curse extends JavaPlugin {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
-
-		if(cmd.getName().equalsIgnoreCase("curse")){ // If the player typed /curse then do the following...
-			if (sender instanceof Player) // If they're a player...
-			{
-				if (sender.isOp()) // TODO: Replace with permissions.
+		if (sender instanceof Player) // If they're a player...
+		{
+				if (args.length == 0) // If they didn't give an arg...
 				{
-					if (args.length == 0) // If they didn't give an arg...
-					{
-						sender.sendMessage("Error! You must specify a player.");
-						return false;
-					}
-					else if (this.getServer().getPlayer(args[0]) != null) // If the input matched a player...
-					{
-						
-						Player targetPlayer = this.getServer().getPlayer(args[0]);
-						
-						if (isCursed(targetPlayer)) // If the player is cursed...
-						{
-							uncursePlayer(targetPlayer); // Uncurse the player.
-							sender.sendMessage("Uncursed " + targetPlayer.getName() + ".");
-							
-						}
-						else // If they are not cursed.
-						{
-							cursePlayer(targetPlayer); // Curse the player.
-							sender.sendMessage("Cursed " + targetPlayer.getName() + ".");
-						}
-						
-					}
-					else // They gave input, but it was bad.
-					{
-						sender.sendMessage("Error! Invalid input!");
-						sender.sendMessage(ChatColor.DARK_PURPLE + "Note that at this time offline players cannot be cursed.");
-						return false;
-					}
-				}
-				else
-				{
+					sender.sendMessage("Error! You must specify a player.");
 					return false;
 				}
-			}
-			else
-			{
-				sender.sendMessage("This command can only be used ingame.");
-				return false;
-			}
+				else if (this.getServer().getPlayer(args[0]) != null) // If the input matched a player...
+				{
 
+					Player targetPlayer = this.getServer().getPlayer(args[0]);
 
+					if (isCursed(targetPlayer)) // If the player is cursed...
+					{
+						uncursePlayer(targetPlayer); // Uncurse the player.
+						sender.sendMessage("Uncursed " + targetPlayer.getName() + ".");
 
-			return true;
-		} //If this has happened the function will break and return true. if this hasn't happened the a value of false will be returned.
-		return false; }
+					}
+					else // If they are not cursed.
+					{
+						cursePlayer(targetPlayer); // Curse the player.
+						sender.sendMessage("Cursed " + targetPlayer.getName() + ".");
+					}
+
+				}
+				else // They gave input, but it was bad.
+				{
+					sender.sendMessage("Error! Invalid input!");
+					sender.sendMessage(ChatColor.DARK_PURPLE + "Note that at this time offline players cannot be cursed.");
+					return false;
+				}
+		}
+		else
+		{
+			sender.sendMessage("This command can only be used ingame.");
+			return false;
+		}
+		return true;
+	}
 
 	public HashMap<String,Boolean> getCursedPlayers()
 	{
