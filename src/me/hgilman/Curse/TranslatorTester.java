@@ -13,8 +13,8 @@ public class TranslatorTester {
 		System.out.println("Type your input or \"!quit!\" to quit");
 		String input = in.nextLine();
 		while(!input.equalsIgnoreCase("!quit!")) {
-			CurseTranslator ct = new CurseTranslator(input);
 			System.out.println("Input: \"" + input + "\"");
+			CurseTranslator ct = new CurseTranslator(input);
 			System.out.println("Output: \"" + ct.getTranslation() + "\"");
             input = in.nextLine();
         }
