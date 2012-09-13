@@ -6,11 +6,11 @@ import java.util.regex.Pattern;
 
 public class CurseTranslator {
 
-	private static char[] vowels = {'a', 'e', 'i', 'o', 'u'};
-	private static char[] extendedVowels = {'a', 'e', 'i', 'o', 'u', 'y'};
+	private static char[] vowels = {'a', 'à', 'á', 'ä', 'â', 'ã', 'e', 'è', 'é', 'ë', 'ê', 'i', 'ì', 'í', 'ï', 'î', 'o', 'ò', 'ó', 'ö', 'ô', 'õ', 'u', 'ù', 'ú', 'ü', 'û'};
+	private static char[] extendedVowels = {'a', 'à', 'á', 'ä', 'â', 'ã', 'e', 'è', 'é', 'ë', 'ê', 'i', 'ì', 'í', 'ï', 'î', 'o', 'ò', 'ó', 'ö', 'ô', 'õ', 'u', 'ù', 'ú', 'ü', 'û', 'ÿ', 'y'};
 	Matcher matcher;
 	private String word;
-	private StringBuilder returnValue;
+	private StringBuilder returnValue = new StringBuilder();
 	
 	static {
 		Arrays.sort(vowels);
@@ -19,24 +19,18 @@ public class CurseTranslator {
 	
 	public CurseTranslator(String text)
 	{
-		matcher = Pattern.compile(" [A-Za-z]+").matcher(text);
-		
-		while(matcher.find())
+		matcher = Pattern.compile("(^|[^\\pL]+)(\\pL+|&)").matcher(text); //matches all sequences of alphabetic characters preceded by
+																		 //a non-alphabetic character, I add the space to the front of
+		while(matcher.find())											 //the text to make sure it sees the first word
 		{
-			word = matcher.group().substring(1);
-			if (returnValue != null)
-			{
-			returnValue.append(" " + shifter(word));
-			}
-			else
-			{
-				returnValue = new StringBuilder(shifter(word));
-			}
+			word = matcher.group(2);
+			returnValue.append(matcher.group(1) + shifter(word));
 		}
 	}
 	
 	private static String shifter(String text)
 	{
+		if(text.length() < 1) return text;
 	//	text = tokenizer.nextToken();
 	//	System.out.println(length);
 		if(Arrays.binarySearch(vowels, text.charAt(0)) >= 0) {
