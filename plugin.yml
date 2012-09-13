@@ -1,6 +1,6 @@
 name: Curse
 main: me.hgilman.Curse.Curse
-version: 1.0
+version: 1.0.0
 commands:
    curse:
       description: Makes the player's life... unpleasant.
