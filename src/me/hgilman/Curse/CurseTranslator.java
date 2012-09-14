@@ -10,6 +10,7 @@ public class CurseTranslator {
 	private static char[] extendedVowels = {'a', 'à', 'á', 'ä', 'â', 'ã', 'e', 'è', 'é', 'ë', 'ê', 'i', 'ì', 'í', 'ï', 'î', 'o', 'ò', 'ó', 'ö', 'ô', 'õ', 'u', 'ù', 'ú', 'ü', 'û', 'ÿ', 'y'};
 	Matcher matcher;
 	private String word;
+	private String nonwordStuff;
 	private StringBuilder returnValue = new StringBuilder();
 	
 	static {
@@ -19,18 +20,19 @@ public class CurseTranslator {
 	
 	public CurseTranslator(String text)
 	{
-		matcher = Pattern.compile("(^|[^\\pL]+)(\\pL+|&)").matcher(text); //matches all sequences of alphabetic characters preceded by
+		matcher = Pattern.compile("([^\\pL]+)|(\\pL+)").matcher(text); //matches all sequences of alphabetic characters preceded by
 																		 //a non-alphabetic character, I add the space to the front of
 		while(matcher.find())											 //the text to make sure it sees the first word
 		{
 			word = matcher.group(2);
-			returnValue.append(matcher.group(1) + shifter(word));
+			nonwordStuff = matcher.group(1);
+			returnValue.append((nonwordStuff != null ? nonwordStuff : "") + shifter(word));
 		}
 	}
 	
 	private static String shifter(String text)
 	{
-		if(text.length() < 1) return text;
+		if(text == null || text.length() < 1) return "";
 	//	text = tokenizer.nextToken();
 	//	System.out.println(length);
 		if(Arrays.binarySearch(vowels, text.charAt(0)) >= 0) {
@@ -43,10 +45,10 @@ public class CurseTranslator {
 			return text;
 		}
 		int i = 1;
-		text += text.charAt(0);
+		text += text.toLowerCase().charAt(0);
 		for(; Arrays.binarySearch(extendedVowels, text.charAt(i)) < 0; i++) {
 			//System.out.println("flag1");
-			text += text.charAt(i);
+			text += text.toLowerCase().charAt(i);
 			//System.out.println("0 pos is" + text.charAt(0));
 		}
 		text = text.substring(i);
